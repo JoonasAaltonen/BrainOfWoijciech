@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Woj-Chat</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="./scripts/Wojchat.js"></script>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        </head>
+    <body>
+        <h1>Welcome to Woj-Chat!</h1>
+        <br />
+        <hr />
+        <br />
+        <div class="w3-container w3-cell">
+            <form method="post" action="/query">
+                <textarea id="MessageBox" name="Your message:" rows="4" cols="50" placeholder="Feel free to ask Wojciech anything!"></textarea>
+                <br />
+                <input type="submit" id="msgSubmitBtn" onclick="ProcessMessage()" value="Send message" />
+            </form>
+        </div>
+        <div class="w3-container w3-cell">
+            <textarea class="answers" id="Answer" name="Answer:" rows="4" cols="50" placeholder="Wojciech's answers will be shown here!"></textarea>   
+        </div>
+     </body>
+</html>
+
