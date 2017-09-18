@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Woj-Chat answer creator</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <script>
+            // Category and message need to be given, question is optional
+            function checkData() {
+                if ((document.getElementById("categoryBox").value === "") ||
+                   (document.getElementById("messageBox").value === ""))
+                {
+                    return false;
+                }
+            }
+        </script>
+
+        <form action="/addAnswer" method="POST" onsubmit="return checkData()">
+            <input type="text" id="categoryBox" placeholder="Category" name="category">
+            <br />
+            <input type="text" id="questionBox" placeholder="Question" name="questions" />
+            <br />
+            <textarea type="text" id="messageBox" name="message" rows="4" cols="50" placeholder="Write your answer..."></textarea>
+            <br />
+            <input type="submit" id="uploadpost-btn" value="upload" name="uploadAnswer">
+        </form>
+     </body>
+</html>
+

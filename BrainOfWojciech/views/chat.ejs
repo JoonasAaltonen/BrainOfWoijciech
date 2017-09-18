@@ -8,11 +8,9 @@
     </head>
     <body>
         <div style="display:none">  <!-- almost spaghetti, this is just a place where to collect the query results to use in the javascript file -->
-            <% for(var i=0; i<qResult.length; i++) {%>
             <li class="viestit">
-                <span><%= qResult[i].message %></span>
+                <span><%= qResult.message %></span>
             </li>
-            <% } %>
         </div>
 
         <h1>Welcome to Woj-Chat!</h1>
@@ -28,7 +26,7 @@
         </div>
 
         <div class="w3-container w3-cell">
-            <textarea class="answers" id="Answer" name="Answer:" rows="4" cols="50" placeholder="Wojciech's answers will be shown here!"><%= qResult[1].message %></textarea>
+            <textarea class="answers" id="Answer" name="Answer:" rows="4" cols="50" placeholder="Wojciech's answers will be shown here!"><%= qResult.message %></textarea>
         </div>
 
     </body>

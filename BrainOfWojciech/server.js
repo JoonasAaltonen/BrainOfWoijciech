@@ -8,20 +8,13 @@ var express = require("express");
 var app = express();
 app.use(express.static(__dirname + "/public"));
 
-var defaultResults = [
+var defaultResult =
     {
         "_id": {
             "$oid": "59a1516df36d28069b4dc77c"
         },
         "message": "Default Answer for Woj-Chat"
-    },
-    {
-        "_id": {
-            "$oid": "59a1516df36d28069b4dc77d"
-        },
-        "message": "Default Answer 2 for Woj-Chat"
-    }
-];
+    };
 
 var mongodb = require("mongodb");
 var mongoClient = mongodb.MongoClient;
@@ -46,8 +39,14 @@ app.listen(3000, () =>
 app.get("/",
     function(req, res)
         {
-        res.render("chat.ejs", {qResult : defaultResults}); // pass qResult var to chat.ejs with value defaultResults
+        res.render("chat.ejs", {qResult : defaultResult}); // pass qResult var to chat.ejs with value defaultResults
     });
+
+app.get("/addAnswers",
+    function(req, res)
+        {
+        res.render("answers.ejs");
+        });
 
 app.post('/query',
     (req, res) =>
@@ -55,20 +54,25 @@ app.post('/query',
         console.log(req.body);
         //console.log("POSSIBLE QUERY RETURN!? " + SearchMessage(req.body));
         var answers = SearchMessage(req.body);
-        var query = { category: answers.category, questions: answers.questions };
+        var query = { category: answers.category, questions: answers.questions, message: answers.message };
         db.collection("answers").find(query).toArray(function (err, results) {
             if (err) {
                 throw err;
             }
-            console.log("Results: " + results);
-            console.log("Results[0]: " + results[0]);
+            results = RandomizeAnswer(results);     // Pick random one from the array of 
             res.render("chat.ejs", { qResult: results });       // THIS GOD DAMN LINE NEEDS TO BE _IN_ THE QUERY FUNCTION TO WORK
         });
     });
 
+app.post("/addAnswer",
+    (req, res) =>
+    {
+        res.render("chat.ejs", { qResult: defaultResult});
+    })
+
 function SearchMessage(msg)
 {
-    var message = JSON.stringify(msg);
+    var message = JSON.stringify(msg).toLowerCase();
     var answer =
         {
             category: "",
@@ -86,7 +90,7 @@ function SearchMessage(msg)
             answer.questions = "what";
         }
     }
-    else if (message.search("are you") >= 0)
+    else if (message.search("you") >= 0)
     {
         answer.category = "personal";
         if (message.search("who") >= 0)
@@ -101,6 +105,7 @@ function SearchMessage(msg)
         answer.category = "default";
     }
 
+    // Flying spaghetti monster 
     if (answer.category === "") answer.category = new RegExp(/^/);
     if (answer.questions === "") answer.questions = new RegExp(/^/);
     if (answer.message === "") answer.message = new RegExp(/^/);
@@ -117,9 +122,11 @@ function SearchMessage(msg)
     return answer;
 }
 
-function CreateQString(answer)
+function RandomizeAnswer(queryResults)
 {
-    
+    var qLenght = queryResults.length;
+    var rand = Math.floor((Math.random() * qLenght));
+    return queryResults[rand];
 }
 
 // WORKING MONGODB QUERY DO NOT REMOVE, WRITE ANOTHER ONE IF YOU WANT TO WANK WITH IT

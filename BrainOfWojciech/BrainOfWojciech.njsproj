@@ -36,7 +36,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="server.js" />
-    <Content Include="views\chatScript.ejs" />
+    <Content Include="views\answers.ejs" />
     <Content Include="views\chat.ejs" />
     <Content Include="package.json" />
     <Content Include="README.md" />
