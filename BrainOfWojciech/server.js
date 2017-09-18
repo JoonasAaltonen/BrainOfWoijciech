@@ -8,19 +8,29 @@ var express = require("express");
 var app = express();
 app.use(express.static(__dirname + "/public"));
 
+var defaultResults = [
+    {
+        "_id": {
+            "$oid": "59a1516df36d28069b4dc77c"
+        },
+        "message": "Default Answer for Woj-Chat"
+    },
+    {
+        "_id": {
+            "$oid": "59a1516df36d28069b4dc77d"
+        },
+        "message": "Default Answer 2 for Woj-Chat"
+    }
+];
+
 var mongodb = require("mongodb");
 var mongoClient = mongodb.MongoClient;
 mongoClient.connect('mongodb://Joonas:Joonas@ds155150.mlab.com:55150/joonasaaltonen',
     (err, database) =>
     {
-        console.log("yhdistetään kantaan2");
+        console.log("Connecting to database");
         if (err) return console.log(err + " jeee");
         db = database;
-        app.listen(port,
-            () =>
-            {
-                console.log('Kuunnellaan porttia:3000');
-            });
     });
 
 
@@ -30,39 +40,100 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(3000, () =>
     {
-        console.log("Listening to port 3000");
+        console.log("Listening to port " + port);
     });
 
 app.get("/",
     function(req, res)
         {
-        res.render("chat.ejs");
-        });
+        res.render("chat.ejs", {qResult : defaultResults}); // pass qResult var to chat.ejs with value defaultResults
+    });
 
 app.post('/query',
     (req, res) =>
     {
-        var query = { message: /^D/ };
-        var queryResult = "";
-        db.collection("answers").find(query).toArray(function(err, result)
-            {
-            if (err) throw err;
-            console.log(result);
-            queryResult = result;
-            });
-        res.render("chat.ejs", { answers: queryResult });
+        console.log(req.body);
+        //console.log("POSSIBLE QUERY RETURN!? " + SearchMessage(req.body));
+        var answers = SearchMessage(req.body);
+        var query = { category: answers.category, questions: answers.questions };
+        db.collection("answers").find(query).toArray(function (err, results) {
+            if (err) {
+                throw err;
+            }
+            console.log("Results: " + results);
+            console.log("Results[0]: " + results[0]);
+            res.render("chat.ejs", { qResult: results });       // THIS GOD DAMN LINE NEEDS TO BE _IN_ THE QUERY FUNCTION TO WORK
+        });
     });
+
+function SearchMessage(msg)
+{
+    var message = JSON.stringify(msg);
+    var answer =
+        {
+            category: "",
+            questions: "",
+            message: ""
+        };
+    
+    if (message === "") {
+        answer.message = "Mind stop asking me nothing?";
+    }
+    else if (message.search("food") >= 0) {
+        answer.category = "food";
+        if (message.search("what") >= 0)
+        {
+            answer.questions = "what";
+        }
+    }
+    else if (message.search("are you") >= 0)
+    {
+        answer.category = "personal";
+        if (message.search("who") >= 0)
+        {
+            answer.questions = "who";
+        }
+        if (message.search("how") >= 0) {
+            answer.questions = "how";
+        }
+    }
+    else {
+        answer.category = "default";
+    }
+
+    if (answer.category === "") answer.category = new RegExp(/^/);
+    if (answer.questions === "") answer.questions = new RegExp(/^/);
+    if (answer.message === "") answer.message = new RegExp(/^/);
+
+    // To see if the object is behaving accordingly
+    var answerDetails = Object.getOwnPropertyNames(answer);
+    var i = 0;      // Can't fit into loop declaration..?
+    for (var prop in answer)
+    {
+        console.log(answerDetails[i] + ": " + answer[prop]);
+        i++;
+    }
+
+    return answer;
+}
+
+function CreateQString(answer)
+{
+    
+}
 
 // WORKING MONGODB QUERY DO NOT REMOVE, WRITE ANOTHER ONE IF YOU WANT TO WANK WITH IT
 //app.post('/query',
-//    (req, res) =>
-//    {
+//    (req, res) => {
+//        console.log(req.body);
 //        var query = { message: /^D/ };
-//        db.collection("answers").find(query).toArray(function(err, result)
-//            {
-//            if (err) throw err;
-//            console.log(result);
-//            db.close();
+//        db.collection("answers").find(query).toArray(function (err, results) {
+//            if (err) {
+//                throw err;
+//            }
+//            console.log(results);
+//            console.log(results[0].message);
+//            res.render("chat.ejs", { qResult: results });       // THIS GOD DAMN LINE NEEDS TO BE _IN_ THE QUERY FUNCTION TO WORK
 //            });
 //    });
 // WORKING MONGODB QUERY DO NOT REMOVE, WRITE ANOTHER ONE IF YOU WANT TO WANK WITH IT

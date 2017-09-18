@@ -2,14 +2,15 @@
 
 function ProcessMessage()
 {
-    var message = document.getElementById("MessageBox").value.toLowerCase();
 
+    var message = document.getElementById("MessageBox").value.toLowerCase();
+    
     var answer = String.concat(message, "wat");     // USE THIS FOR TRHE ANSWER CONCATS!!
     document.getElementById("Answer").value = answer;
     if (message === "")
     {
-        document.getElementById("Answer").value = "Mind stop asking me nothing?";
-        return false;
+        return document.getElementById("Answer").value = "Mind stop asking me nothing?";
+        
     }
     else if (message.search("food") >= 0)
     {

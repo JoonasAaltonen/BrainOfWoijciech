@@ -1,0 +1,3 @@
+D:\VisualStudio Projects\Mahtikoodia 3\BrainOfWojciech\BrainOfWojciech\obj\Debug\BrainOfWojciech.njsprojResolveAssemblyReference.cache
+D:\VisualStudio Projects\Mahtikoodia 3\BrainOfWojciech\BrainOfWojciech\obj\Debug\BrainOfWojciech.njsproj.CoreCompileInputs.cache
+D:\VisualStudio Projects\Mahtikoodia 3\BrainOfWojciech\BrainOfWojciech\bin\Microsoft.NodejsTools.WebRole.dll
