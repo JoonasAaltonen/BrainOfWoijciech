@@ -16,6 +16,13 @@ var defaultResult =
         "message": "Default Answer for Woj-Chat"
     };
 
+var defaultAnswer =
+    {
+        category: "default",
+        message: "Nice answers mate",
+        questions: "Whaaat?"
+    };
+
 var mongodb = require("mongodb");
 var mongoClient = mongodb.MongoClient;
 mongoClient.connect('mongodb://Joonas:Joonas@ds155150.mlab.com:55150/joonasaaltonen',
@@ -45,7 +52,7 @@ app.get("/",
 app.get("/addAnswers",
     function(req, res)
         {
-        res.render("answers.ejs");
+        res.render("answers.ejs", {answers: defaultAnswer });
         });
 
 app.post('/query',
@@ -67,8 +74,26 @@ app.post('/query',
 app.post("/addAnswer",
     (req, res) =>
     {
-        res.render("chat.ejs", { qResult: defaultResult});
-    })
+        console.log(JSON.stringify(req.body).toLowerCase());
+        db.collection("answers").save(req.body,
+            (err, result) =>
+            {
+                if (err) return console.log(err);
+                console.log('Saved to database!');
+                
+            });
+        res.render("answers.ejs", {answers: defaultAnswer});
+    });
+
+app.post("/showAnswers", (req, res) =>
+{
+    db.collection("answers").find({ message: /^/ }).toArray(function (err, results) {
+        if (err) {
+            throw err;
+        }
+        res.render("answers.ejs", { answers: results });       // THIS GOD DAMN LINE NEEDS TO BE _IN_ THE QUERY FUNCTION TO WORK
+        });
+})
 
 function SearchMessage(msg)
 {

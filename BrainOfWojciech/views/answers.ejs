@@ -16,7 +16,7 @@
                 }
             }
         </script>
-
+        <h2>EVERYTHING YOU SUBMIT HERE WILL BE UPLOADED TO THE DATABASE <br />Please don't be a dick...</h2>
         <form action="/addAnswer" method="POST" onsubmit="return checkData()">
             <input type="text" id="categoryBox" placeholder="Category" name="category">
             <br />
@@ -24,8 +24,26 @@
             <br />
             <textarea type="text" id="messageBox" name="message" rows="4" cols="50" placeholder="Write your answer..."></textarea>
             <br />
-            <input type="submit" id="uploadpost-btn" value="upload" name="uploadAnswer">
+            <input type="submit" id="uploadpost-btn" value="upload">
         </form>
+        
+        <br /><hr /><br />
+        
+        <form action="/showAnswers" method="post">
+            <input type="submit" value="Load existing answers" />
+        </form>
+
+        <ul class="existingAnswers">
+            <% for(var i=0; i < answers.length; i++) {%>
+            <li class="viestit">
+                <p>category: <span><%= answers[i].category %></span></p>
+                <p>question: <span><%= answers[i].question %></span></p>
+                <p>message: <span><%= answers[i].message %></span></p>
+                <hr>
+
+            </li>
+            <% } %>
+        </ul>
      </body>
 </html>
 
